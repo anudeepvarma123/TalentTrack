@@ -1,7 +1,8 @@
-from pydantic import BaseModel
-from typing import Literal
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import date
 
-class AttendanceMark(BaseModel):
-    user_id: str
-    date: str  # Format: YYYY-MM-DD
-    status: Literal["present", "absent", "late"]
+class AttendanceEntry(BaseModel):
+    employee_id: str = Field(..., example="")
+    status: str = Field(..., example="")  # e.g., Present, Absent, Leave
+    date: Optional[date] = Field(default_factory=date.today, example="") 
