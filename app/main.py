@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 from app.routes import auth, employee
 from app.routes import payroll,attendance
 
@@ -15,3 +16,7 @@ app.include_router(attendance.router, prefix="/attendance", tags=["Attendance"])
 @app.get("/")
 def home():
     return {"message": "Welcome to TalentTrack HRM System"}
+
+# ✅ Add this to run directly using `python main.py`
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
