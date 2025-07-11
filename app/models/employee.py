@@ -6,7 +6,8 @@ class EmployeeBase(BaseModel):
     email: str
     department: str
     role: str
-    joining_date: str  # Format: YYYY-MM-DD
+    joining_date: str 
+    userid:str # Format: YYYY-MM-DD
 
 class EmployeeCreate(EmployeeBase):
     pass
@@ -17,3 +18,4 @@ class EmployeeUpdate(BaseModel):
     department: Optional[str]
     role: Optional[str]
     joining_date: Optional[str]
+    
