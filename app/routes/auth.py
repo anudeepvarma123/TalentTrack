@@ -8,10 +8,10 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post("/register", summary="Register new user (form)")
 async def register_user(
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    role: str = Form(...)
+    username: str = Form(" ", description="Enter your username", example="john_doe"),
+    email: str = Form(" ", description="Enter your email address", example="john@example.com"),
+    password: str = Form(" ", description="Enter your password", example="password123"),
+    role: str = Form(" ", description="Specify the user role", example="admin")
 ):
     existing = await db.users.find_one({"email": email})
     if existing:
@@ -30,8 +30,8 @@ async def register_user(
 
 @router.post("/login", summary="Login user (form)")
 async def login_user(
-    email: str = Form(...),
-    password: str = Form(...)
+    email: str = Form(" ", description="Your email address", example="john@example.com"),
+    password: str = Form(" ", description="Your password", example="password123")
 ):
     existing = await db.users.find_one({"email": email})
     if not existing:

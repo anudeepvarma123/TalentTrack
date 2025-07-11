@@ -8,10 +8,10 @@ router = APIRouter()
 
 @router.post("/", summary="Generate salary (form)")
 async def generate_salary(
-    employee_id: str = Form(...),
-    base_salary: float = Form(...),
-    bonus: float = Form(0.0),
-    deductions: float = Form(0.0),
+    employee_id: str = Form(" "),
+    base_salary: float = Form(" "),
+    bonus: float = Form(" "),
+    deductions: float = Form(" "),
     user=Depends(get_current_user)
 ):
     if user["role"] not in ["admin", "hr"]:

@@ -11,11 +11,11 @@ def serialize_employee(emp):
 
 @router.post("/", summary="Create employee (form)")
 async def create_employee(
-    name: str = Form(...),
-    email: str = Form(...),
-    department: str = Form(...),
+    name: str = Form(" ", description="Enter The Name",example="john"),
+    email: str = Form(" "),
+    department: str = Form(" "),
     role: str = Form(...),
-    joining_date: str = Form(...),
+    joining_date: str = Form(""),
     user=Depends(get_current_user)
 ):
     if user["role"] not in ["admin", "hr"]:

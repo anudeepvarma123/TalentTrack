@@ -7,7 +7,7 @@ router = APIRouter()
 
 @router.post("/", summary="Mark attendance (form)")
 async def mark_attendance(
-    status: str = Form(...),  # e.g., "present", "absent", "late"
+    status: str = Form(" "),  # e.g., "present", "absent", "late"
     date: str = Form(None),
     user=Depends(get_current_user)
 ):
