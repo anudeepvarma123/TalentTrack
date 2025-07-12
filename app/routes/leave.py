@@ -8,9 +8,9 @@ router = APIRouter()
 
 @router.post("/", summary="Apply for leave (form)")
 async def apply_leave(
-    from_date: str = Form(" "),
-    to_date: str = Form(" "),
-    reason: str = Form(" "),
+    from_date: str = Form(""),
+    to_date: str = Form(""),
+    reason: str = Form(""),
     user=Depends(get_current_user)
 ):
     if user["role"] not in ["employee", "hr", "admin"]:

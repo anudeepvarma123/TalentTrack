@@ -27,10 +27,10 @@ def serialize_employee(emp):
 
 @router.post("/", summary="Create employee (form)")
 async def create_employee(
-    name: str = Form(" ", description="Enter The Name", example="john"),
-    email: str = Form(" "),
-    department: str = Form(" "),
-    role: str = Form(...),
+    name: str = Form("", description="Enter The Name", example="john"),
+    email: str = Form(""),
+    department: str = Form(""),
+    role: str = Form(""),
     joining_date: str = Form(""),
     user=Depends(get_current_user)
 ):
@@ -78,44 +78,63 @@ async def list_employees(user=Depends(get_current_user)):
     employees = await db.employees.find().to_list(length=100)
     return [serialize_employee(e) for e in employees]
 
-@router.get("/{id}", summary="Get single employee")
-async def get_employee(id: str, user=Depends(get_current_user)):
-    employee = await db.employees.find_one({"_id": ObjectId(id)})
+@router.get("/{user_id}", summary="Get single employee")
+async def get_employee(user_id: str, user=Depends(get_current_user)):
+    employee = await db.employees.find_one({
+        "user_id": {"$regex": f"^{user_id}$", "$options": "i"}  # case-insensitive match
+    })
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     return serialize_employee(employee)
 
-@router.put("/{id}", summary="Update employee (form)")
+@router.put("/{user_id}", summary="Update employee (form)")
 async def update_employee(
-    id: str,
-    name: str = Form(None),
-    email: str = Form(None),
-    department: str = Form(None),
-    role: str = Form(None),
-    joining_date: str = Form(None),
+    user_id: str,
+    name: str = Form(""),
+    email: str = Form(""),
+    department: str = Form(""),
+    role: str = Form(""),
+    joining_date: str = Form(""),
     user=Depends(get_current_user)
 ):
     if user["role"] not in ["admin", "hr"]:
         raise HTTPException(status_code=403, detail="Unauthorized")
 
-    update_data = {k: v for k, v in {
-        "name": name,
-        "email": email,
-        "department": department,
-        "role": role,
-        "joining_date": joining_date
-    }.items() if v is not None}
+    # ❗ Filter out both None and empty string values
+    update_data = {
+        k: v for k, v in {
+            "name": name,
+            "email": email,
+            "department": department,
+            "role": role,
+            "joining_date": joining_date
+        }.items() if v.strip() != ""
+    }
 
-    result = await db.employees.update_one({"_id": ObjectId(id)}, {"$set": update_data})
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No valid fields to update.")
+
+    result = await db.employees.update_one(
+        {"user_id": {"$regex": f"^{user_id}$", "$options": "i"}},  # Case-insensitive match
+        {"$set": update_data}
+    )
+
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Employee not found")
+
     return {"message": "Employee updated"}
 
-@router.delete("/{id}", summary="Delete employee")
-async def delete_employee(id: str, user=Depends(get_current_user)):
+
+@router.delete("/{user_id}", summary="Delete employee")
+async def delete_employee(user_id: str, user=Depends(get_current_user)):
     if user["role"] != "admin":
         raise HTTPException(status_code=403, detail="Only admin can delete employees")
-    result = await db.employees.delete_one({"_id": ObjectId(id)})
+
+    result = await db.employees.delete_one(
+        {"user_id": {"$regex": f"^{user_id}$", "$options": "i"}}
+    )
+
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Employee not found")
     return {"message": "Employee deleted"}
+
