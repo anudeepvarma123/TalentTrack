@@ -3,11 +3,21 @@ from datetime import datetime
 from bson import ObjectId
 from app.db.mongo import db
 from app.auth.dependencies import get_current_user
+from enum import Enum
+
+
+
+# Create a LeaveType Enum 
+class LeaveType(str, Enum):
+    leave = "leave"
+    wfh = "work from home"
+    floater = "floater leave"
 
 router = APIRouter()
 
 @router.post("/", summary="Apply for leave (form)")
 async def apply_leave(
+    leave_type: LeaveType = Form(..., description="Type of leave"),
     from_date: str = Form(""),
     to_date: str = Form(""),
     reason: str = Form(""),
@@ -18,6 +28,7 @@ async def apply_leave(
 
     leave_request = {
         "user_id": user["user_id"],
+        "type": leave_type.value,  # Get string value from Enum
         "from_date": from_date,
         "to_date": to_date,
         "reason": reason,
