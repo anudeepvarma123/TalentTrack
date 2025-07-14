@@ -17,3 +17,6 @@ app.include_router(leave.router, prefix="/leaves", tags=["Leaves"])
 def home():
     return {"message": "Welcome to TalentTrack HRM System"}
 
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

@@ -51,8 +51,23 @@ async def login_user(
     if not user or not password_context.verify(password, user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
+    employee = await db.employees.find_one({"email": email})
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee details not found")
+
     token = create_jwt_token(str(user["_id"]), user["role"])
-    return {"access_token": token, "role": user["role"]}
+    return {
+        "access_token": token,
+        "userDetails": {
+            "id": str(user["_id"]),
+            "userid": employee.get("user_id", ""),
+            "name": employee.get("name", ""),
+            "email": employee.get("email", ""),
+            "department": employee.get("department", ""),
+            "role": employee.get("role", ""),
+            "joining_date": employee.get("joining_date", "")
+        }
+    }
 
 
 @router.post("/request-reset", summary="Request password reset")
