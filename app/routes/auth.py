@@ -55,7 +55,8 @@ async def login_user(
     if not employee:
         raise HTTPException(status_code=404, detail="Employee details not found")
 
-    token = create_jwt_token(str(user["_id"]), user["role"])
+    token = create_jwt_token(employee["user_id"], user["role"])
+
     return {
         "access_token": token,
         "userDetails": {

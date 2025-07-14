@@ -3,20 +3,6 @@ from bson import ObjectId
 from app.db.mongo import db
 from app.auth.dependencies import get_current_user
 from app.utils.employee_id import get_next_employee_id
-from passlib.hash import bcrypt  # ✅ Correct way to hash passwords
-      # To hash default password
-
-router = APIRouter()
-
-def serialize_employee(emp):
-    emp["_id"] = str(emp["_id"])
-    return emp
-
-from fastapi import APIRouter, HTTPException, Depends, Form
-from bson import ObjectId
-from app.db.mongo import db
-from app.auth.dependencies import get_current_user
-from app.utils.employee_id import get_next_employee_id
 from passlib.hash import bcrypt  # ✅ Correct hashing import
 
 router = APIRouter()
