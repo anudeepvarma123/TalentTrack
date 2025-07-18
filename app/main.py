@@ -1,8 +1,19 @@
 from fastapi import FastAPI
 from app.routes import auth, employee, leave
 from app.routes import payroll,attendance
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Specific origin for Angular dev server
+    allow_credentials=True,
+    allow_methods=["*"],                      # Allow all HTTP methods
+    allow_headers=["*"],                      # Allow all headers
+)
+
 
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
