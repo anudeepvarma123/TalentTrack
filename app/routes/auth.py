@@ -55,7 +55,7 @@ async def request_password_reset(email: str = Form(""), request: Request = None)
         "exp": datetime.utcnow() + timedelta(hours=1)
     }, RESET_SECRET, algorithm="HS256")
 
-    reset_link = f"http://127.0.0.1:8000/auth/reset-password?token={reset_token}"
+    reset_link = f"https://talenttrack-om95.onrender.com/auth/reset-password?token={reset_token}"
     send_reset_email(email, reset_link)
 
     return {"message": "Password reset link sent to your email"}
