@@ -26,7 +26,7 @@ app.include_router(leave.router, prefix="/leaves", tags=["Leaves"])
 # Root endpoint
 @app.get("/")
 def home():
-    return {"message": "Welcome to TalentTrack HRM System"}
+    return {"message": "Welcome to TalentTrack HRM"}
 
 import os
 
